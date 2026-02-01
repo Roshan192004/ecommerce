@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h2>My Orders</h2>
+
+{% if orders %}
+  {% for order in orders %}
+    <div class="card mb-4">
+      <div class="card-header">
+        <strong>Order #{{ order.id }}</strong>
+        <span class="float-end">
+          {{ order.created_at|date:"d M Y, h:i A" }}
+        </span>
+      </div>
+
+      <div class="card-body">
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Medicine</th>
+              <th>Qty</th>
+              <th>Price</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for item in order.orderitem_set.all %}
+            <tr>
+              <td>{{ item.medicine.name }}</td>
+              <td>{{ item.quantity }}</td>
+              <td>₹{{ item.medicine.price }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  {% endfor %}
+{% else %}
+  <p>You have not placed any orders yet.</p>
+{% endif %}
+
+{% endblock %}

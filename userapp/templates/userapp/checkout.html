@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h2>Checkout</h2>
+
+<table class="table">
+    <tr>
+        <th>Medicine</th>
+        <th>Qty</th>
+        <th>Price</th>
+    </tr>
+
+    {% for item in items %}
+    <tr>
+        <td>{{ item.medicine.name }}</td>
+        <td>{{ item.quantity }}</td>
+        <td>₹{{ item.medicine.price }}</td>
+    </tr>
+    {% endfor %}
+</table>
+
+<h4>Total Amount: ₹{{ total }}</h4>
+
+<a href="{% url 'place_order' %}" class="btn btn-success">
+    Place Order
+</a>
+{% endblock %}

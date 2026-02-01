@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<h2 class="mb-4">Find Your Medicines</h2>
+
+<!-- A–Z BAR -->
+<div class="az-bar mb-4">
+  <span class="active">All</span>
+  {% for letter in "ABCDEFGHIJKLMNOPQRSTUVWXYZ" %}
+    <span>{{ letter }}</span>
+  {% endfor %}
+</div>
+
+<!-- MEDICINE LIST -->
+{% for letter, items in medicines.items %}
+  <div class="medicine-group">
+    <h4>{{ letter }}</h4>
+    <ul>
+      {% for item in items %}
+
+        {% if item == "Acne" %}
+          <!-- CLICKABLE ACNE -->
+          <li>
+            <a href="{% url 'acne_medicines' %}" class="medicine-link">
+              {{ item }}
+            </a>
+          </li>
+        {% else %}
+          <!-- NORMAL TEXT FOR NOW -->
+          <li>{{ item }}</li>
+        {% endif %}
+
+      {% endfor %}
+    </ul>
+  </div>
+{% endfor %}
+
+{% endblock %}

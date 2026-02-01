@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="text-center mt-5">
+    <h2>🎉 Order Placed Successfully!</h2>
+    <p>Thank you for shopping with Avnik Biotech.</p>
+
+    <a href="{% url 'all_medicines' %}" class="btn btn-primary mt-3">
+        Continue Shopping
+    </a>
+</div>
+{% endblock %}

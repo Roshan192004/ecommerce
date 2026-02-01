@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+
+<h3 class="mb-4">Acne Ointments & Capsules</h3>
+
+<div class="row">
+ {% for medicine in medicines %}
+<div class="medicine-card">
+    <img src="{{ medicine.image.url }}" alt="{{ medicine.name }}">
+    <h6>{{ medicine.name }}</h6>
+    <p>₹{{ medicine.price }}</p>
+
+    <a href="{% url 'add_to_cart' medicine.id %}" class="btn btn-success">
+        Add +
+    </a>
+</div>
+{% endfor %}
+
+</div>
+
+{% endblock %}

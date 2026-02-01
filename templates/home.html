@@ -1,0 +1,16 @@
+{%extends 'base.html'%}
+{%block content%}
+
+{% comment %} homepic section {% endcomment %}
+<section class="hero-section">
+    <div class="hero-content text-center">
+        <h1 class="display-5 fw-bold">Welcome to Avnik Biotech</h1>
+        <h2 class="mb-4">Shop  Smarter,Live Better</h2>
+        <p class="led mt-3">Discover amazing products at unbeatable prices</p>
+        <a href="{% url 'all_medicines' %}" class="btn btn-warning btn-lg mt-4">
+        Shop Now
+    </a>
+
+    </div>
+</section>
+{%endblock%}
