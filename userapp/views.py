@@ -5,7 +5,8 @@ from django.contrib import messages
 from django.contrib.auth.models import User
 from adminapp.models import Medicine
 from .models import Order, OrderItem
-
+from adminapp.models import DeliveryLocation
+from adminapp.models import ServiceableLocation
 
 # ----------------------------
 # ----------------------------
@@ -71,21 +72,28 @@ def logout_view(request):
 def add_to_cart(request, medicine_id):
     medicine = get_object_or_404(Medicine, id=medicine_id)
 
-    # Get or create active order (cart)
-    order, created = Order.objects.get_or_create(
+    # ALWAYS get the latest pending order (cart)
+    order = Order.objects.filter(
         user=request.user,
-        is_completed=False
-    )
+        status="PENDING"
+    ).order_by('-created_at').first()
 
-    # Get or create order item
+    # If no pending cart exists, create one
+    if not order:
+        order = Order.objects.create(
+            user=request.user,
+            status="PENDING"
+        )
+
+    # Add or update item
     item, created = OrderItem.objects.get_or_create(
         order=order,
         medicine=medicine
     )
 
-    # Increase quantity if already exists
     if not created:
         item.quantity += 1
+
     item.save()
 
     return redirect('cart')
@@ -95,10 +103,11 @@ def add_to_cart(request, medicine_id):
 # CART PAGE
 # ----------------------------
 @login_required
+
 def cart_view(request):
     order = Order.objects.filter(
         user=request.user,
-        is_completed=False
+        status="PENDING"
     ).first()
 
     items = OrderItem.objects.filter(order=order) if order else []
@@ -111,46 +120,58 @@ def cart_view(request):
         'items': items,
         'total': total
     })
-    
+
 @login_required
 def checkout_view(request):
+    # ❌ BLOCK ONLY IF LOCATION NOT SET
+    if "delivery_location" not in request.session:
+        messages.error(request, "Unable to deliver at your location")
+        return redirect("cart")
+
     order = Order.objects.filter(
         user=request.user,
-        is_completed=False
+        status="PENDING"
     ).first()
 
     if not order:
         messages.error(request, "Your cart is empty")
-        return redirect('cart')
+        return redirect("cart")
 
     items = OrderItem.objects.filter(order=order)
+    total = sum(item.medicine.price * item.quantity for item in items)
 
-    total = 0
-    for item in items:
-        total += item.medicine.price * item.quantity
-
-    return render(request, 'userapp/checkout.html', {
-        'order': order,
-        'items': items,
-        'total': total
+    return render(request, "userapp/checkout.html", {
+        "order": order,
+        "items": items,
+        "total": total
     })
+
+   
+
 
 @login_required
 def place_order(request):
+    if "delivery_location" not in request.session:
+        messages.error(request, "Unable to deliver at your location")
+        return redirect("checkout")
+
     order = Order.objects.filter(
         user=request.user,
-        is_completed=False
+        status="PENDING"
     ).first()
 
     if not order:
         messages.error(request, "No active order found")
-        return redirect('cart')
+        return redirect("cart")
 
-    order.is_completed = True
+    # ✅ PLACE ORDER
+    order.status = "PLACED"
     order.save()
 
     messages.success(request, "Order placed successfully!")
-    return redirect('order_success')
+    return redirect("order_success")
+
+
 
 @login_required
 def order_success(request):
@@ -160,7 +181,7 @@ def order_success(request):
 def my_orders(request):
     orders = Order.objects.filter(
         user=request.user,
-        is_completed=True
+        # is_completed=True
     ).order_by('-created_at')
 
     return render(request, 'userapp/my_orders.html', {
@@ -202,3 +223,76 @@ def remove_item(request, item_id):
     item = get_object_or_404(OrderItem, id=item_id)
     item.delete()
     return redirect('cart')
+
+
+# delivery Location
+
+
+def set_location(request):
+    if request.method == "POST":
+        pincode = request.POST.get("pincode")
+
+        try:
+            location = DeliveryLocation.objects.get(pincode=pincode)
+
+            # ✅ VALID LOCATION
+            request.session["delivery_location"] = {
+                "city": location.city,
+                "pincode": location.pincode
+            }
+            request.session.pop("delivery_error", None)
+
+        except DeliveryLocation.DoesNotExist:
+            # ❌ INVALID LOCATION
+            request.session.pop("delivery_location", None)
+            request.session["delivery_error"] = "Unable to deliver at your location"
+
+    return redirect(request.META.get("HTTP_REFERER", "/"))
+
+
+def role_login(request):
+    if request.method == "POST":
+        username = request.POST.get("username")
+        password = request.POST.get("password")
+        role = request.POST.get("role")  # user or admin
+
+        user = authenticate(request, username=username, password=password)
+
+        if user is None:
+            messages.error(request, "Invalid username or password")
+            return redirect("login")
+
+        # ✅ ADMIN LOGIN
+        if role == "admin":
+            if user.is_staff or user.is_superuser:
+                login(request, user)
+                return redirect("dashboard")   # admin dashboard
+            else:
+                messages.error(request, "You are not authorized as admin")
+                return redirect("login")
+
+        # ✅ USER LOGIN
+        if role == "user":
+            if not user.is_staff:
+                login(request, user)
+                return redirect("home")  # user homepage
+            else:
+                messages.error(request, "Admin cannot login as user")
+                return redirect("login")
+
+    return render(request, "auth/login.html")
+
+
+def logout_view(request):
+    logout(request)
+    return redirect("login")
+
+
+from adminapp.models import HealthCategory
+
+def home(request):
+    health_categories = HealthCategory.objects.filter(is_active=True)
+
+    return render(request, 'userapp/home.html', {
+        'health_categories': health_categories
+    })

@@ -5,35 +5,39 @@
 <h2 class="mb-4">Find Your Medicines</h2>
 
 <!-- A–Z BAR -->
-<div class="az-bar mb-4">
-  <span class="active">All</span>
+<!-- A–Z BAR -->
+<div class="az-wrapper mb-4">
+  <a href="#all" class="az-pill az-active">All</a>
+
   {% for letter in "ABCDEFGHIJKLMNOPQRSTUVWXYZ" %}
-    <span>{{ letter }}</span>
+    <a href="#letter-{{ letter }}" class="az-pill">
+      {{ letter }}
+    </a>
   {% endfor %}
 </div>
 
-<!-- MEDICINE LIST -->
-{% for letter, items in medicines.items %}
-  <div class="medicine-group">
-    <h4>{{ letter }}</h4>
-    <ul>
-      {% for item in items %}
 
-        {% if item == "Acne" %}
-          <!-- CLICKABLE ACNE -->
+
+<!-- A–Z LIST -->
+ 
+<div id="all"></div>
+<div class="row">
+  {% for letter, categories in grouped_categories.items %}
+    <div class="col-md-3 mb-4" id="letter-{{ letter }}">
+      <h5 class="fw-bold">{{ letter }}</h5>
+
+      <ul class="list-unstyled">
+        {% for category in categories %}
           <li>
-            <a href="{% url 'acne_medicines' %}" class="medicine-link">
-              {{ item }}
+            <a href="{% url 'acne_medicines' %}?category={{ category.name }}"
+               class="text-decoration-none text-dark">
+              {{ category.name }}
             </a>
           </li>
-        {% else %}
-          <!-- NORMAL TEXT FOR NOW -->
-          <li>{{ item }}</li>
-        {% endif %}
-
-      {% endfor %}
-    </ul>
-  </div>
-{% endfor %}
+        {% endfor %}
+      </ul>
+    </div>
+  {% endfor %}
+</div>
 
 {% endblock %}

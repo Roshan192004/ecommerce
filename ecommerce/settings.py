@@ -137,6 +137,3 @@ LOGIN_URL = 'login'
 LOGIN_REDIRECT_URL = 'home'
 LOGOUT_REDIRECT_URL = 'login'
 
-
-RAZORPAY_KEY_ID = "rzp_test_xxxxxxxx"
-RAZORPAY_KEY_SECRET = "xxxxxxxxxxxx"

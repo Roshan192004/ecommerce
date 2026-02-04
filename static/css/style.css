@@ -1,4 +1,6 @@
 /* GLOBAL RESET */
+
+
 body {
   font-family: 'Segoe UI', Roboto, Arial, sans-serif;
   background-color: #f4f6f9;
@@ -71,7 +73,7 @@ a {
 
 .table th {
   font-weight:600;
-  background-color: #212529;
+  background-color: #272921;
   color: #fff;
 }
 
@@ -467,3 +469,117 @@ a {
 table img {
     object-fit: contain;
 }
+html {
+  scroll-behavior: smooth;
+}
+
+.az-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.az-link {
+  padding: 6px 10px;
+  background: #f1f1f1;
+  border-radius: 4px;
+  text-decoration: none;
+  color: #333;
+  font-size: 14px;
+}
+
+.az-link:hover,
+.az-link.active {
+  background: #2aa39a;
+  color: white;
+}
+
+/* A–Z BAR STYLING */
+.az-wrapper {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 10px 0;
+}
+
+.az-pill {
+  min-width: 34px;
+  height: 34px;
+  padding: 0 12px;
+  border-radius: 20px;
+  background: #f2f4f6;
+  color: #333;
+  font-size: 14px;
+  font-weight: 500;
+  text-align: center;
+  line-height: 34px;
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+
+.az-pill:hover {
+  background: #2aa39a;
+  color: #fff;
+  transform: translateY(-1px);
+}
+
+.az-active {
+  background: #2aa39a;
+  color: #fff;
+}
+
+/* PROFILE DROPDOWN */
+.profile-wrapper {
+  position: relative;
+}
+
+.profile-btn {
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 500;
+}
+
+.profile-btn i {
+  font-size: 22px;
+}
+
+.profile-menu {
+  position: absolute;
+  right: 0;
+  top: 40px;
+  width: 220px;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+  display: none;
+  z-index: 1000;
+}
+
+.profile-menu a {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 15px;
+  text-decoration: none;
+  color: #333;
+  font-size: 14px;
+}
+
+.profile-menu a:hover {
+  background: #f5f5f5;
+}
+
+.profile-menu i {
+  color: #2fa4a9;
+}
+
+.profile-menu hr {
+  margin: 5px 0;
+}
+
+.profile-menu .logout {
+  color: #d9534f;
+}
+

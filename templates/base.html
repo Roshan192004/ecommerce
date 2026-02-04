@@ -1,34 +1,42 @@
 {% load static %}
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Avnik Biotech</title>
+  <title>Avnik Biotech</title>
 
-    <!-- Bootstrap -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Bootstrap -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 
-    <!-- Font Awesome -->
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
+  <!-- Font Awesome -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
 
-    <!-- Custom CSS -->
-    <link href="{% static 'css/style.css' %}" rel="stylesheet">
+  <!-- Custom CSS -->
+  <link href="{% static 'css/style.css' %}" rel="stylesheet">
 </head>
 <body>
 
-<!-- ================= TOP HEADER ================= -->
+<!--  TOP HEADER -->
 <div class="top-header">
   <div class="container d-flex align-items-center justify-content-between">
 
     <!-- LOGO -->
-   <div class="logo">
-  <img src="{% static 'images/logo.jpg' %}" alt="Avnik Biotech" class="logo-img">
-  <span class="logo-text">Avnik Biotech</span>
-</div>
+    <div class="logo d-flex align-items-center">
+      <img src="{% static 'images/logo.jpg' %}" alt="Avnik Biotech" class="logo-img">
+      <a href="{% url 'home' %}" class="navbar-brand text-white text-decoration-none">
+    Avnik Biotech
+</a>
 
+    </div>
 
     <!-- LOCATION -->
-    <div class="location">
-      Deliver to <strong>Delhi, 110001</strong>
+    <div class="location" data-bs-toggle="modal" data-bs-target="#locationModal" style="cursor:pointer;">
+      <i class="fa fa-map-marker-alt me-1"></i>
+      {% if request.session.delivery_location %}
+        Deliver to {{ request.session.delivery_location.city }},
+        {{ request.session.delivery_location.pincode }}
+      {% else %}
+        Deliver to your location
+      {% endif %}
     </div>
 
     <!-- SEARCH -->
@@ -36,38 +44,72 @@
       <input type="text" placeholder="Search for medicines, lab tests, beauty & wellness">
     </div>
 
-    <!-- AUTH -->
-    <div class="header-actions">
+    <!-- PROFILE -->
+    <div class="header-actions position-relative">
+
       {% if user.is_authenticated %}
-        <span class="me-3">Hi, {{ user.username }}</span>
-         <a href="{% url 'my_orders' %}" class="header-link me-3">
-      My Orders
-    </a>
-        <a href="/logout/" class="header-link">Logout</a>
+      <div class="profile-wrapper" onclick="toggleProfileMenu()">
+
+        <!-- ICON + NAME -->
+        <div class="profile-btn d-flex align-items-center gap-2">
+          <i class="fa fa-user-circle fs-4"></i>
+          <span class="profile-username">
+            {{ user.first_name|default:user.username }}
+          </span>
+        </div>
+
+        <!-- DROPDOWN -->
+        <div class="profile-menu" id="profileMenu">
+
+          <a href="{% url 'my_orders' %}">
+            <i class="fa fa-box"></i> My Orders
+          </a>
+
+          <a href="#">
+            <i class="fa fa-map-marker-alt"></i> My Addresses
+          </a>
+
+          <a href="#">
+            <i class="fa fa-book-medical"></i> Health Records
+          </a>
+
+          <a href="#">
+            <i class="fa fa-bookmark"></i> Saved for Later
+          </a>
+
+          <hr>
+
+          <a href="{% url 'logout' %}" class="logout">
+            <i class="fa fa-power-off"></i> Sign Out
+          </a>
+        </div>
+      </div>
+
       {% else %}
-        <a href="/login/" class="header-link me-3">Sign In</a>
-        <a href="/register/" class="header-link">Register</a>
+        <a href="{% url 'login' %}" class="header-link me-3">Sign In</a>
+        <a href="{% url 'register' %}" class="header-link">Register</a>
       {% endif %}
+
     </div>
-
   </div>
 </div>
 
-<!-- ================= CATEGORY BAR ================= -->
+<!-- CATEGORY BAR -->
 <div class="category-bar">
-  <div class="container d-flex gap-4">
-    <div class="medicine-menu">
-  <button class="cat-link medicine-btn" onclick="toggleMedicineDropdown()">
-    <i class="fa-solid fa-pills me-1"></i>Medicine
-  </button>
+  <div class="container d-flex gap-4 align-items-center">
 
-  <div class="medicine-dropdown" id="medicineDropdown">
-    <a href="{% url 'all_medicines' %}">All Medicines</a>
-    <a href="/medicines/health/">Medicines by Health Issues</a>
-    <a href="/medicines/body/">Medicines for Body Parts</a>
-    <a href="/medicines/generic/">Medicines by Generic Name</a>
-  </div>
-</div>
+    <div class="medicine-menu">
+      <button class="cat-link medicine-btn" onclick="toggleMedicineDropdown()">
+        <i class="fa-solid fa-pills me-1"></i> Medicine
+      </button>
+
+      <div class="medicine-dropdown" id="medicineDropdown">
+        <a href="{% url 'all_medicines' %}">All Medicines</a>
+        <a href="#">Medicines by Health Issues</a>
+        <a href="#">Medicines for Body Parts</a>
+        <a href="#">Medicines by Generic Name</a>
+      </div>
+    </div>
 
     <a href="#" class="cat-link">Lab Tests</a>
     <a href="#" class="cat-link">Beauty</a>
@@ -75,125 +117,70 @@
     <a href="#" class="cat-link">Health Corner</a>
     <a href="#" class="cat-link">Offers</a>
 
-    <!-- CART -->
     <a href="{% url 'cart' %}" class="cat-link ms-auto">
-  <i class="fa fa-shopping-cart"></i> Cart
-  <span class="badge bg-warning text-dark">
-  </span>
-</a>
+      <i class="fa fa-shopping-cart"></i> Cart
+    </a>
 
   </div>
 </div>
 
-<!-- ================= MAIN CONTENT ================= -->
+<!-- MAIN CONTENT  -->
 <div class="container mt-4">
-    {% block content %}{% endblock %}
+  {% block content %}{% endblock %}
 </div>
 
-<!-- ================= FOOTER ================= -->
-<!-- FOOTER -->
+<!--  FOOTER -->
 <footer class="netmeds-footer">
-
-  <!-- TOP INFO -->
-  <div class="footer-top">
-    <div class="container">
-      <p class="footer-desc">
-        <strong>Avnik Biotech</strong> is one of India’s trusted healthcare platforms,
-        delivering quality medicines, lab products, and wellness solutions at
-        affordable prices across the country.
-      </p>
-    </div>
+  <div class="footer-bottom text-center py-3">
+    © 2026 Avnik Biotech. All rights reserved.
   </div>
-
-  <!-- MAIN FOOTER -->
-  <div class="footer-main">
-    <div class="container">
-      <div class="row">
-
-        <!-- COMPANY -->
-        <div class="col-md-2">
-          <h6>COMPANY</h6>
-          <ul>
-            <li>About Avnik Biotech</li>
-            <li>Careers</li>
-            <li>Sitemap</li>
-          </ul>
-        </div>
-
-        <!-- POLICIES -->
-        <div class="col-md-3">
-          <h6>OUR POLICIES</h6>
-          <ul>
-            <li>Terms & Conditions</li>
-            <li>Privacy Policy</li>
-            <li>Fees & Payments</li>
-            <li>Shipping & Delivery</li>
-            <li>Return & Refund</li>
-          </ul>
-        </div>
-
-        <!-- SHOPPING -->
-        <div class="col-md-2">
-          <h6>SHOPPING</h6>
-          <ul>
-            <li>Medicines A–Z</li>
-            <li>Shop by Category</li>
-            <li>Offers / Coupons</li>
-            <li>FAQs</li>
-            <li>Contact Us</li>
-          </ul>
-        </div>
-
-        <!-- SOCIAL -->
-        <div class="col-md-2">
-          <h6>SOCIAL</h6>
-          <ul>
-            <li>Facebook</li>
-            <li>Twitter</li>
-            <li>LinkedIn</li>
-            <li>Youtube</li>
-            <li>Instagram</li>
-          </ul>
-        </div>
-
-        <!-- NEWSLETTER -->
-        <div class="col-md-3">
-          <h6>SUBSCRIBE TO OUR NEWSLETTER</h6>
-          <p class="newsletter-text">
-            Get health tips & latest offers directly in your inbox.
-          </p>
-          <div class="newsletter-box">
-            <input type="email" placeholder="Enter your email">
-            <button>→</button>
-          </div>
-        </div>
-
-      </div>
-    </div>
-  </div>
-
-  <!-- BOTTOM BAR -->
-  <div class="footer-bottom">
-    <div class="container">
-      © 2026 Avnik Biotech. All rights reserved.
-    </div>
-  </div>
-
 </footer>
+
+<!-- LOCATION MODAL  -->
+<div class="modal fade" id="locationModal" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content p-4">
+      <h5>Where do you want the delivery?</h5>
+
+      {% if request.session.delivery_error %}
+        <p class="text-danger small">{{ request.session.delivery_error }}</p>
+      {% endif %}
+
+      <form method="post" action="{% url 'set_location' %}">
+        {% csrf_token %}
+        <input type="text" name="pincode" class="form-control" placeholder="Enter PIN Code" required>
+        <button class="btn btn-success mt-3 w-100">Check</button>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!--  SCRIPTS  -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 
 <script>
 function toggleMedicineDropdown() {
-    const dropdown = document.getElementById("medicineDropdown");
-    dropdown.style.display =
-        dropdown.style.display === "block" ? "none" : "block";
+  const dropdown = document.getElementById("medicineDropdown");
+  dropdown.style.display = dropdown.style.display === "block" ? "none" : "block";
 }
 
-window.addEventListener("click", function (e) {
-    const menu = document.querySelector(".medicine-menu");
-    if (!menu.contains(e.target)) {
-        document.getElementById("medicineDropdown").style.display = "none";
-    }
+function toggleProfileMenu() {
+  const menu = document.getElementById("profileMenu");
+  menu.style.display = menu.style.display === "block" ? "none" : "block";
+}
+
+window.addEventListener("click", function(e) {
+  const profile = document.querySelector(".profile-wrapper");
+  const medicine = document.querySelector(".medicine-menu");
+
+  if (profile && !profile.contains(e.target)) {
+    document.getElementById("profileMenu").style.display = "none";
+  }
+  if (medicine && !medicine.contains(e.target)) {
+    document.getElementById("medicineDropdown").style.display = "none";
+  }
 });
 </script>
 
 </body>
+</html>
