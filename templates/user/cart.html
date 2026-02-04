@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h2>My Cart</h2>
+
+{% if items %}
+<table class="table">
+    <thead>
+        <tr>
+            <th>Medicine</th>
+            <th>Price</th>
+            <th>Quantity</th>
+            <th>Total</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for item in items %}
+        <tr>
+            <td>{{ item.medicine.name }}</td>
+            <td>₹{{ item.medicine.price }}</td>
+            <td>{{ item.quantity }}</td>
+            <td>₹{{ item.medicine.price|floatformat:2 }}</td>
+            <td>
+                <a href="{% url 'increase_qty' item.id %}">+</a>
+                |
+                <a href="{% url 'decrease_qty' item.id %}">−</a>
+                |
+                <a href="{% url 'remove_item' item.id %}">Remove</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<h4>Total: ₹{{ total }}</h4>
+<a href="{% url 'checkout' %}" class="btn btn-warning">
+    Proceed to Checkout
+</a>
+
+{% else %}
+<p>Your cart is empty.</p>
+{% endif %}
+
+{% endblock %}

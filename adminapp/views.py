@@ -1,22 +1,22 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 from django.contrib import messages
-from django.db.models import Sum
-from collections import defaultdict
-from .models import HealthCategory
-from .models import Category, Medicine, DeliveryLocation
+from django.utils.text import slugify
+from .models import Category,Medicine
+from .models import DeliveryLocation
+from .forms import MedicineForm
 from userapp.models import Order, OrderItem
-from .forms import HealthCategoryForm
 
-# ADMIN CHECK
+
+# ADMIN CHECK 
 
 def is_admin(user):
     return user.is_staff or user.is_superuser
 
 
-# ADMIN LOGIN
+# ADMIN LOGIN 
 
 def admin_login(request):
     if request.user.is_authenticated and is_admin(request.user):
@@ -34,10 +34,10 @@ def admin_login(request):
         else:
             messages.error(request, "Invalid admin credentials")
 
-    return render(request, "adminapp/admin_login.html")
+    return render(request, "adminpanel/admin_login.html")
 
 
-# ADMIN LOGOUT
+#  ADMIN LOGOUT 
 
 @login_required
 def admin_logout(request):
@@ -45,7 +45,7 @@ def admin_logout(request):
     return redirect('home')
 
 
-# ADMIN DASHBOARD
+#  ADMIN DASHBOARD 
 
 @login_required
 @user_passes_test(is_admin)
@@ -63,7 +63,7 @@ def dashboard(request):
 
     users_count = User.objects.count()
 
-    return render(request, "adminapp/dashboard.html", {
+    return render(request, "adminpanel/dashboard.html", {
         "users_count": users_count,
         "total_orders": total_orders,
         "total_sales": total_sales,
@@ -71,45 +71,142 @@ def dashboard(request):
     })
 
 
-# ADMIN CATEGORIES
+# CATEGORY ADMIN 
 
 @login_required
 @user_passes_test(is_admin)
 def admin_categories(request):
-    if request.method == "POST":
-        name = request.POST.get("name")
-        if name:
-            Category.objects.create(name=name)
-
     categories = Category.objects.all()
-    return render(request, "adminapp/categories.html", {
+    return render(request, "adminpanel/categories.html", {
         "categories": categories
     })
 
 
-# ADMIN MEDICINES
+@login_required
+@user_passes_test(is_admin)
+def add_category(request):
+    if request.method == "POST":
+        name = request.POST.get("name")
+        slug = request.POST.get("slug")
+        image = request.FILES.get("image")
+        is_active = request.POST.get("is_active") == "on"
+
+        # Auto-generate slug if empty
+        if not slug and name:
+            slug = slugify(name)
+
+        category = Category.objects.create(
+            name=name,
+            slug=slug,
+            image=image,
+            is_active=is_active
+        )
+
+        # Handle buttons
+        if "save_add_another" in request.POST:
+            return redirect("add_category")
+
+        if "save_continue" in request.POST:
+            return redirect("edit_category", id=category.id)
+        return redirect("admin_categories")
+
+    return render(request, "adminpanel/category_form.html")
 
 @login_required
 @user_passes_test(is_admin)
-def admin_medicines(request):
+def edit_category(request, id):
+    category = get_object_or_404(Category, id=id)
+
+    if request.method == "POST":
+        category.name = request.POST.get("name")
+        category.slug = slugify(category.name)
+
+        if "image" in request.FILES:
+            category.image = request.FILES["image"]
+
+        category.save()
+        return redirect("admin_categories")
+
+    return render(request, "adminpanel/category_form.html", {
+        "category": category
+    })
+
+
+@login_required
+@user_passes_test(is_admin)
+def delete_category(request, id):
+    category = get_object_or_404(Category, id=id)
+    category.delete()
+    return redirect("admin_categories")
+
+
+#  MEDICINE / PRODUCT ADMIN 
+
+@login_required
+@user_passes_test(is_admin)
+def admin_products(request):
+    products = Medicine.objects.all()
+    categories = Category.objects.all()
+
+    return render(request, "adminpanel/products.html", {
+        "products": products,
+        "categories": categories
+    })
+
+
+@login_required
+@user_passes_test(is_admin)
+def add_product(request):
+    categories = Category.objects.all()
+
     if request.method == "POST":
         Medicine.objects.create(
             name=request.POST.get("name"),
             price=request.POST.get("price"),
             stock=request.POST.get("stock"),
-            category_id=request.POST.get("category")
+            category_id=request.POST.get("category"),
+            image=request.FILES.get("image")
         )
+        return redirect("admin_products")
 
-    medicines = Medicine.objects.all()
-    categories = Category.objects.all()
-
-    return render(request, "adminapp/medicines.html", {
-        "medicines": medicines,
+    return render(request, "adminpanel/product_form.html", {
         "categories": categories
     })
 
 
-# ADMIN DELIVERY LOCATIONS
+@login_required
+@user_passes_test(is_admin)
+def edit_product(request, id):
+    product = get_object_or_404(Medicine, id=id)
+    categories = Category.objects.all()
+
+    if request.method == "POST":
+        product.name = request.POST.get("name")
+        product.price = request.POST.get("price")
+        product.stock = request.POST.get("stock")
+        product.category_id = request.POST.get("category")
+
+        if "image" in request.FILES:
+            product.image = request.FILES["image"]
+
+        product.save()
+        return redirect("admin_products")
+
+    return render(request, "adminpanel/product_form.html", {
+        "product": product,
+        "categories": categories
+    })
+
+
+@login_required
+@user_passes_test(is_admin)
+def delete_product(request, id):
+    product = get_object_or_404(Medicine, id=id)
+    product.delete()
+    return redirect("admin_products")
+
+
+# ================= DELIVERY LOCATIONS =================
 
 @login_required
 @user_passes_test(is_admin)
@@ -121,11 +218,12 @@ def admin_locations(request):
         )
 
     locations = DeliveryLocation.objects.all()
-    return render(request, "adminapp/locations.html", {
+    return render(request, "adminpanel/locations.html", {
         "locations": locations
     })
 
-# ADMIN ORDERS
+
+# ================= ADMIN ORDERS =================
 
 @login_required
 @user_passes_test(is_admin)
@@ -137,77 +235,53 @@ def admin_orders(request):
 
     orders = Order.objects.all().order_by("-created_at")
 
-    return render(request, "adminapp/orders.html", {
+    return render(request, "adminpanel/orders.html", {
         "orders": orders
     })
+    
 
+#  admin add_medicine
 
-
-# USER SIDE – ALL MEDICINES
-
-def all_medicines(request):
-    categories = Category.objects.all().order_by("name")
-    grouped_categories = defaultdict(list)
-
-    for category in categories:
-        grouped_categories[category.name[0].upper()].append(category)
-
-    return render(request, "medicines/all_medicines.html", {
-        "grouped_categories": dict(grouped_categories)
+@login_required
+@user_passes_test(is_admin)
+def admin_medicines(request):
+    medicines = Medicine.objects.all()
+    return render(request, 'adminpanel/medicines.html', {
+        'medicines': medicines
     })
 
+@login_required
+@user_passes_test(is_admin)
+def add_medicine(request):
+    form = MedicineForm(request.POST or None, request.FILES or None)
 
-# USER SIDE – CATEGORY MEDICINES
+    if form.is_valid():
+        form.save()
+        return redirect('admin_medicines')
 
-def acne_medicines(request):
-    category_name = request.GET.get("category")
-    category = Category.objects.get(name=category_name)
-    medicines = Medicine.objects.filter(category=category)
-
-    return render(request, "medicines/acne_medicines.html", {
-        "medicines": medicines,
-        "category": category
+    return render(request, 'adminpanel/medicine_form.html', {
+        'form': form
     })
+    
+@login_required
+@user_passes_test(is_admin)
+def edit_medicine(request, id):
+    medicine = get_object_or_404(Medicine, id=id)
+    form = MedicineForm(request.POST or None, request.FILES or None, instance=medicine)
 
-def admin_health_categories(request):
-    categories = HealthCategory.objects.all()
-    return render(request, 'adminapp/health_categories.html', {
-        'categories': categories
+    if form.is_valid():
+        form.save()
+        return redirect('admin_medicines')
+
+    return render(request, 'adminpanel/medicine_form.html', {
+        'form': form,
+        'edit': True
     })
+    
 
-def add_health_category(request):
-    form = HealthCategoryForm(request.POST or None, request.FILES or None)
-    if form.is_valid():
-        form.save()
-        return redirect('admin_health_categories')
-    return render(request, 'adminapp/health_category_form.html', {'form': form})
-
-def edit_health_category(request, id):
-    category = get_object_or_404(HealthCategory, id=id)
-    form = HealthCategoryForm(request.POST or None, request.FILES or None, instance=category)
-    if form.is_valid():
-        form.save()
-        return redirect('admin_health_categories')
-    return render(request, 'adminapp/health_category_form.html', {'form': form})
-
-
-def admin_categories(request):
-    categories = Category.objects.all()
-    return render(request, 'adminapp/categories.html', {'categories': categories})
-
-
-def add_category(request):
-    form = CategoryForm(request.POST or None)
-    if form.is_valid():
-        form.save()
-        return redirect('admin_categories')
-    return render(request, 'adminapp/category_form.html', {'form': form})
-
-
-def edit_category(request, id):
-    category = get_object_or_404(Category, id=id)
-    form = CategoryForm(request.POST or None, instance=category)
-    if form.is_valid():
-        form.save()
-        return redirect('admin_categories')
-    return render(request, 'adminapp/category_form.html', {'form': form})
+@login_required
+@user_passes_test(is_admin)
+def delete_medicine(request, id):
+    medicine = get_object_or_404(Medicine, id=id)
+    medicine.delete()
+    return redirect('admin_medicines')

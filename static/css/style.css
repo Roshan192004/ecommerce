@@ -1,5 +1,9 @@
 /* GLOBAL RESET */
 
+body {
+    margin: 0;
+    padding: 0;
+}
 
 body {
   font-family: 'Segoe UI', Roboto, Arial, sans-serif;
@@ -81,7 +85,7 @@ a {
    HERO SECTION STYLING
    ========================= */
 
-.hero-section {
+/* .hero-section {
   height: 80vh;
   background-image: url("/static/images/homepic.jpg");
   background-size: cover;
@@ -99,7 +103,7 @@ a {
 }
 
 /* Text content */
-.hero-content {
+/* .hero-content {
     position: absolute;
     top: 50%;
     left: 50%;
@@ -117,7 +121,7 @@ a {
 .hero-content p {
   max-width: 600px;
   margin: auto;
-}
+} */ */
 
 /* Orders table polish */
 .table {
@@ -256,47 +260,51 @@ a {
 }
 
 /* ===== NETMEDS STYLE FOOTER ===== */
+/* ================= DARK FOOTER ================= */
 
-.netmeds-footer {
-  background: #f5f7f8;
-  color: #333;
-  font-size: 0.9rem;
+.site-footer {
+    background-color: #000;          /* BLACK BACKGROUND */
+    color: #ccc;
+    padding-top: 80px;
+    margin-top: 80px;
 }
 
-/* Top description */
-.footer-top {
-  padding: 20px 0;
-  border-bottom: 1px solid #ddd;
+.site-footer h5 {
+    color: #fff;                     /* White headings */
+    font-weight: 700;
+    margin-bottom: 16px;
 }
 
-.footer-desc {
-  max-width: 900px;
-  color: #555;
+.site-footer ul {
+    list-style: none;
+    padding: 0;
 }
 
-/* Main footer */
-.footer-main {
-  padding: 40px 0;
+.site-footer ul li {
+    margin-bottom: 10px;
 }
 
-.footer-main h6 {
-  font-weight: 700;
-  margin-bottom: 12px;
+.site-footer ul li a {
+    color: #bbb;                     /* Light gray links */
+    text-decoration: none;
+    transition: color 0.2s ease;
 }
 
-.footer-main ul {
-  list-style: none;
-  padding: 0;
+.site-footer ul li a:hover {
+    color: #1dbf73;                  /* Green hover */
+}
+.site-footer {
+    margin-top: 0;
 }
 
-.footer-main ul li {
-  margin-bottom: 8px;
-  color: #555;
-  cursor: pointer;
-}
 
-.footer-main ul li:hover {
-  text-decoration: underline;
+/* Footer bottom bar */
+.footer-bottom {
+    background: #111;                /* Slightly lighter black */
+    color: #888;
+    padding: 16px 0;
+    font-size: 13px;
+    margin-top: 40px;
 }
 
 /* Newsletter */
@@ -583,3 +591,240 @@ html {
   color: #d9534f;
 }
 
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Segoe UI", sans-serif;
+}
+
+body {
+    background: #f2f2f2;
+}
+
+/* NAVBAR */
+.navbar {
+    background: #fff;
+    padding: 20px 60px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    font-weight: 700;
+    font-size: 20px;
+    color: #008080;
+}
+
+.logo-icon {
+    font-size: 28px;
+    margin-right: 8px;
+}
+
+.navbar nav a {
+    margin-left: 25px;
+    text-decoration: none;
+    color: #333;
+    font-weight: 500;
+}
+
+.btn-signin {
+    background: #00d084;
+    padding: 8px 18px;
+    color: #fff !important;
+    border-radius: 6px;
+}
+
+/* HERO */
+/* ================= HERO SECTION ================= */
+/* ================= FULL PAGE HERO ================= */
+.hero {
+    margin-bottom: 0 ;
+    padding-bottom: 0;
+}
+
+.hero {
+    min-height: calc(100vh - 100px); /* header height approx */
+    background: linear-gradient(135deg, #1dbf73, #0f9d8a);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 0;
+}
+
+.hero-inner {
+    width: 90%;
+    max-width: 1400px;
+    min-height: 70vh;
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 24px;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 60px;
+
+    padding: 60px 80px;
+}
+
+/* TEXT */
+.hero-text {
+    flex: 1.2;
+    color: #fff;
+}
+
+.hero-text h1 {
+    font-size: 64px;   /* 🔥 BIGGER TITLE */
+    font-weight: 800;
+    line-height: 1.15;
+    margin-bottom: 24px;
+}
+
+.hero-text p {
+    font-size: 18px;
+    max-width: 520px;
+    margin-bottom: 36px;
+    opacity: 0.95;
+}
+
+/* BUTTON */
+.btn-primary {
+    background: #fff;
+    color: #0f9d8a;
+    padding: 14px 34px;
+    border-radius: 10px;
+    font-weight: 600;
+    text-decoration: none;
+}
+
+/* IMAGE */
+.hero-image {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+}
+
+.hero-image img {
+    width: 100%;
+    max-width: 700px;   /* 🔥 BIGGER IMAGE */
+    height: auto;
+}
+
+.category-card {
+    background: #f7dfe5;
+    border-radius: 18px;
+    padding: 15px;
+    transition: transform 0.2s ease;
+}
+
+.category-card:hover {
+    transform: translateY(-5px);
+}
+
+.category-image img {
+    width: 100%;
+    height: 120px;
+    object-fit: contain;
+}
+
+.category-link {
+    display: block;        /* 🔥 THIS fixes layout */
+    height: 100%;
+    text-decoration: none;
+    color: inherit;
+}
+
+/* GRID LAYOUT */
+.category-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 25px;
+}
+
+/* CARD */
+.category-card {
+    background: #f8dfe5;
+    border-radius: 18px;
+    padding: 20px;
+    text-align: center;
+    transition: 0.3s ease;
+    height: 100%;
+}
+
+/* IMAGE */
+.category-image img,
+.category-card img {
+    width: 100%;
+    height: 140px;
+    object-fit: cover;
+    border-radius: 12px;
+}
+
+/* NAME */
+.category-name {
+    margin-top: 12px;
+    font-weight: 600;
+    color: #000;
+}
+
+/* LINK CLEANUP */
+.category-link {
+    text-decoration: none;
+}
+
+/* HOVER EFFECT */
+.category-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.12);
+}
+
+
+.product-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 24px;
+}
+
+.product-card {
+    background: #f8dfe5;
+    border-radius: 18px;
+    padding: 14px;
+    text-align: center;
+    position: relative;
+}
+
+.product-img img {
+    width: 100%;
+    height: 180px;
+    object-fit: contain;
+}
+
+.product-title {
+    font-size: 14px;
+    font-weight: 600;
+    margin: 10px 0;
+}
+
+.price {
+    font-weight: 700;
+    color: #000;
+    margin-bottom: 8px;
+}
+
+.add-btn {
+    background: #20c997;
+    border: none;
+    color: white;
+    padding: 6px 18px;
+    border-radius: 20px;
+    cursor: pointer;
+    font-weight: 600;
+}
+
+.add-btn:hover {
+    background: #17a589;
+}

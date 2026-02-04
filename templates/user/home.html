@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<h3 class="mt-4 mb-3">Health Devices</h3>
+
+<div class="row">
+  {% for category in health_categories %}
+    <div class="col-md-2 text-center mb-3">
+      <div class="card shadow-sm p-2">
+        <img src="{{ category.image.url }}" 
+             class="img-fluid"
+             style="height:120px; object-fit:contain;">
+        <p class="mt-2 fw-semibold">{{ category.name }}</p>
+      </div>
+    </div>
+  {% empty %}
+    <p>No health categories available</p>
+  {% endfor %}
+</div>
+{% endblock %}

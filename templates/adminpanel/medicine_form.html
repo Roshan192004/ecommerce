@@ -1,0 +1,43 @@
+{% extends 'admin_base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+
+  <h3>Add Medicine</h3>
+
+  <form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+
+    <div class="mb-3">
+      <label>Name</label>
+      {{ form.name }}
+    </div>
+
+    <div class="mb-3">
+      <label>Price</label>
+      {{ form.price }}
+    </div>
+
+    <div class="mb-3">
+      <label>Image</label>
+      {{ form.image }}
+    </div>
+
+    <div class="mb-3">
+      <label>Stock</label>
+      {{ form.stock }}
+    </div>
+
+    <div class="mb-3">
+      <label>Category</label>
+      {{ form.category }}
+    </div>
+
+    <button type="submit" class="btn btn-success">
+      Save Medicine
+    </button>
+
+  </form>
+
+</div>
+{% endblock %}

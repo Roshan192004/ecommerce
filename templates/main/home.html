@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+
+<!-- HERO / WELCOME -->
+<div class="text-center mb-5">
+    <h1 class="fw-bold">Welcome to Avnik Biotech 🛒</h1>
+    <p class="text-muted">Best products at best prices</p>
+</div>
+
+<!-- CATEGORIES IN FOCUS -->
+<div class="container">
+    <h3 class="mb-4 fw-bold">Categories In Focus</h3>
+
+    <div class="row g-4">
+        {% for category in categories %}
+        <div class="col-md-2 col-sm-4 col-6">
+            <a href="{% url 'category_medicines' category.slug %}"
+               class="text-decoration-none text-dark">
+
+                <div class="category-card text-center">
+                    <div class="category-image">
+                        {% if category.image %}
+                            <img src="{{ category.image.url }}" alt="{{ category.name }}">
+                        {% else %}
+                            <img src="{% static 'images/default-category.png' %}" alt="Category">
+                        {% endif %}
+                    </div>
+
+                    <p class="mt-2 fw-semibold">{{ category.name }}</p>
+                </div>
+
+            </a>
+        </div>
+        {% empty %}
+        <p>No categories available.</p>
+        {% endfor %}
+    </div>
+</div>
+
+{% endblock %}

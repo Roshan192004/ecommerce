@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Avnik Biotech{% endblock %}
+
+{% block content %}
+<section class="hero">
+    <div class="hero-inner">
+
+        <div class="hero-text">
+            <h1>Take Care of<br>Your Health</h1>
+            <p>
+                Quality medicines and healthcare products delivered to your doorstep.
+            </p>
+            <a href="{% url 'category_page' %}" class="btn-primary">Get Started</a>
+        </div>
+
+        <div class="hero-image">
+            <img src="{% static 'images/landingP.jpeg' %}" alt="Doctors">
+        </div>
+
+    </div>
+</section>
+{% endblock %}

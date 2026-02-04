@@ -1,5 +1,5 @@
 from django import forms
-from .models import Category, HealthCategory, DeliveryLocation
+from .models import Category, HealthCategory, DeliveryLocation,Medicine
 
 class CategoryForm(forms.ModelForm):
     class Meta:
@@ -19,3 +19,7 @@ class DeliveryLocationForm(forms.ModelForm):
         model = DeliveryLocation
         fields = ['city', 'pincode']
 
+class MedicineForm(forms.ModelForm):
+    class Meta:
+        model = Medicine
+        fields = ['name', 'price', 'image', 'stock', 'category']

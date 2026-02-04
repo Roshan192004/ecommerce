@@ -1,0 +1,108 @@
+<!-- NAVBAR (extracted from base) -->
+<div class="top-header">
+  <div class="container d-flex align-items-center justify-content-between">
+
+    <!-- LOGO -->
+    <div class="logo d-flex align-items-center">
+      <img src="{% static 'images/logo.jpg' %}" alt="Avnik Biotech" class="logo-img">
+      <a href="{% url 'home' %}" class="navbar-brand text-white text-decoration-none">
+    Avnik Biotech
+</a>
+
+    </div>
+
+    <!-- LOCATION -->
+    <div class="location" data-bs-toggle="modal" data-bs-target="#locationModal" style="cursor:pointer;">
+      <i class="fa fa-map-marker-alt me-1"></i>
+      {% if request.session.delivery_location %}
+        Deliver to {{ request.session.delivery_location.city }},
+        {{ request.session.delivery_location.pincode }}
+      {% else %}
+        Deliver to your location
+      {% endif %}
+    </div>
+
+    <!-- SEARCH -->
+    <div class="search-bar">
+      <input type="text" placeholder="Search for medicines, lab tests, beauty & wellness">
+    </div>
+
+    <!-- PROFILE -->
+    <div class="header-actions position-relative">
+
+      {% if user.is_authenticated %}
+      <div class="profile-wrapper" onclick="toggleProfileMenu()">
+
+        <!-- ICON + NAME -->
+        <div class="profile-btn d-flex align-items-center gap-2">
+          <i class="fa fa-user-circle fs-4"></i>
+          <span class="profile-username">
+            {{ user.first_name|default:user.username }}
+          </span>
+        </div>
+
+        <!-- DROPDOWN -->
+        <div class="profile-menu" id="profileMenu">
+
+          <a href="{% url 'my_orders' %}">
+            <i class="fa fa-box"></i> My Orders
+          </a>
+
+          <a href="#">
+            <i class="fa fa-map-marker-alt"></i> My Addresses
+          </a>
+
+          <a href="#">
+            <i class="fa fa-book-medical"></i> Health Records
+          </a>
+
+          <a href="#">
+            <i class="fa fa-bookmark"></i> Saved for Later
+          </a>
+
+          <hr>
+
+          <a href="{% url 'logout' %}" class="logout">
+            <i class="fa fa-power-off"></i> Sign Out
+          </a>
+        </div>
+      </div>
+
+      {% else %}
+        <a href="{% url 'login' %}" class="header-link me-3">Sign In</a>
+        <a href="{% url 'register' %}" class="header-link">Register</a>
+      {% endif %}
+
+    </div>
+  </div>
+</div>
+
+<!-- CATEGORY BAR -->
+<div class="category-bar">
+  <div class="container d-flex gap-4 align-items-center">
+
+    <div class="medicine-menu">
+      <button class="cat-link medicine-btn" onclick="toggleMedicineDropdown()">
+        <i class="fa-solid fa-pills me-1"></i> Medicine
+      </button>
+
+      <div class="medicine-dropdown" id="medicineDropdown">
+        <a href="{% url 'all_medicines' %}">All Medicines</a>
+        <a href="#">Medicines by Health Issues</a>
+        <a href="#">Medicines for Body Parts</a>
+        <a href="#">Medicines by Generic Name</a>
+      </div>
+    </div>
+
+    <a href="#" class="cat-link">Lab Tests</a>
+    <a href="#" class="cat-link">Beauty</a>
+    <a href="#" class="cat-link">Wellness</a>
+    <a href="#" class="cat-link">Health Corner</a>
+    <a href="#" class="cat-link">Offers</a>
+
+    <a href="{% url 'cart' %}" class="cat-link ms-auto">
+      <i class="fa fa-shopping-cart"></i> Cart
+    </a>
+
+  </div>
+</div>

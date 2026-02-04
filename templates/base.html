@@ -2,7 +2,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <title>Avnik Biotech</title>
+  <meta charset="UTF-8">
+  <title>{% block title %}Avnik Biotech{% endblock %}</title>
 
   <!-- Bootstrap -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -10,22 +11,24 @@
   <!-- Font Awesome -->
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
 
-  <!-- Custom CSS -->
+  <!-- Global CSS -->
   <link href="{% static 'css/style.css' %}" rel="stylesheet">
+
+  <!-- Page-specific CSS (IMPORTANT) -->
+  {% block extra_css %}{% endblock %}
 </head>
 <body>
 
-<!--  TOP HEADER -->
+<!-- ================= TOP HEADER ================= -->
 <div class="top-header">
   <div class="container d-flex align-items-center justify-content-between">
-
+    
     <!-- LOGO -->
     <div class="logo d-flex align-items-center">
       <img src="{% static 'images/logo.jpg' %}" alt="Avnik Biotech" class="logo-img">
-      <a href="{% url 'home' %}" class="navbar-brand text-white text-decoration-none">
-    Avnik Biotech
-</a>
-
+      <a href="{% url 'home' %}" class="navbar-brand text-white text-decoration-none ms-2">
+        Avnik Biotech
+      </a>
     </div>
 
     <!-- LOCATION -->
@@ -49,8 +52,6 @@
 
       {% if user.is_authenticated %}
       <div class="profile-wrapper" onclick="toggleProfileMenu()">
-
-        <!-- ICON + NAME -->
         <div class="profile-btn d-flex align-items-center gap-2">
           <i class="fa fa-user-circle fs-4"></i>
           <span class="profile-username">
@@ -58,33 +59,25 @@
           </span>
         </div>
 
-        <!-- DROPDOWN -->
         <div class="profile-menu" id="profileMenu">
-
           <a href="{% url 'my_orders' %}">
             <i class="fa fa-box"></i> My Orders
           </a>
-
           <a href="#">
             <i class="fa fa-map-marker-alt"></i> My Addresses
           </a>
-
           <a href="#">
             <i class="fa fa-book-medical"></i> Health Records
           </a>
-
           <a href="#">
             <i class="fa fa-bookmark"></i> Saved for Later
           </a>
-
           <hr>
-
           <a href="{% url 'logout' %}" class="logout">
             <i class="fa fa-power-off"></i> Sign Out
           </a>
         </div>
       </div>
-
       {% else %}
         <a href="{% url 'login' %}" class="header-link me-3">Sign In</a>
         <a href="{% url 'register' %}" class="header-link">Register</a>
@@ -94,7 +87,7 @@
   </div>
 </div>
 
-<!-- CATEGORY BAR -->
+<!-- ================= CATEGORY BAR ================= -->
 <div class="category-bar">
   <div class="container d-flex gap-4 align-items-center">
 
@@ -120,23 +113,74 @@
     <a href="{% url 'cart' %}" class="cat-link ms-auto">
       <i class="fa fa-shopping-cart"></i> Cart
     </a>
-
   </div>
 </div>
 
-<!-- MAIN CONTENT  -->
-<div class="container mt-4">
-  {% block content %}{% endblock %}
-</div>
+<!-- ================= PAGE CONTENT ================= -->
+{% block content %}
+{% endblock %}
 
-<!--  FOOTER -->
-<footer class="netmeds-footer">
-  <div class="footer-bottom text-center py-3">
+<!-- ================= FOOTER ================= -->
+<!-- ================= FOOTER ================= -->
+<footer class="site-footer">
+  <div class="container footer-top">
+    <div class="row">
+
+      <!-- COMPANY -->
+      <div class="col-md-3 col-sm-6">
+        <h5>COMPANY</h5>
+        <ul>
+          <li><a href="#">About Avnik Biotech</a></li>
+          <li><a href="#">Career</a></li>
+          <li><a href="#">Sitemap</a></li>
+        </ul>
+      </div>
+
+      <!-- OUR POLICIES -->
+      <div class="col-md-3 col-sm-6">
+        <h5>OUR POLICIES</h5>
+        <ul>
+          <li><a href="#">Terms & Conditions</a></li>
+          <li><a href="#">Privacy Policy</a></li>
+          <li><a href="#">Fees & Payments Policy</a></li>
+          <li><a href="#">Shipping & Delivery Policy</a></li>
+          <li><a href="#">Return, Refund & Cancellation Policy</a></li>
+        </ul>
+      </div>
+
+      <!-- SHOPPING -->
+      <div class="col-md-3 col-sm-6">
+        <h5>SHOPPING</h5>
+        <ul>
+          <li><a href="#">Medicines A to Z</a></li>
+          <li><a href="#">Shop by Categories</a></li>
+          <li><a href="#">Offers / Coupons</a></li>
+          <li><a href="#">FAQs</a></li>
+          <li><a href="#">Contact Us</a></li>
+        </ul>
+      </div>
+
+      <!-- SOCIAL -->
+      <div class="col-md-3 col-sm-6">
+        <h5>SOCIAL</h5>
+        <ul>
+          <li><a href="#">Facebook</a></li>
+          <li><a href="#">Twitter</a></li>
+          <li><a href="#">LinkedIn</a></li>
+          <li><a href="#">YouTube</a></li>
+          <li><a href="#">Instagram</a></li>
+        </ul>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="footer-bottom text-center">
     © 2026 Avnik Biotech. All rights reserved.
   </div>
 </footer>
 
-<!-- LOCATION MODAL  -->
+<!-- ================= LOCATION MODAL ================= -->
 <div class="modal fade" id="locationModal" tabindex="-1">
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content p-4">
@@ -155,7 +199,7 @@
   </div>
 </div>
 
-<!--  SCRIPTS  -->
+<!-- ================= SCRIPTS ================= -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 
 <script>

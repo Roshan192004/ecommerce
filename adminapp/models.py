@@ -1,11 +1,19 @@
 from django.db import models
-from django.contrib import admin
+
 # from .models import HealthCategory
 class Category(models.Model):
     name = models.CharField(max_length=100)
+    slug = models.SlugField(unique=True, null=True, blank=True)
+    image = models.ImageField(
+        upload_to='categories/',
+        null=True,
+        blank=True
+    )
+    is_active = models.BooleanField(default=True)
 
     def __str__(self):
         return self.name
+
 
 
 class Medicine(models.Model):
@@ -41,3 +49,4 @@ class HealthCategory(models.Model):
 
     def __str__(self):
         return self.name
+    
