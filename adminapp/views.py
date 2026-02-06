@@ -140,73 +140,7 @@ def delete_category(request, id):
     return redirect("admin_categories")
 
 
-#  MEDICINE / PRODUCT ADMIN 
 
-@login_required
-@user_passes_test(is_admin)
-def admin_products(request):
-    products = Medicine.objects.all()
-    categories = Category.objects.all()
-
-    return render(request, "adminpanel/products.html", {
-        "products": products,
-        "categories": categories
-    })
-
-
-@login_required
-@user_passes_test(is_admin)
-def add_product(request):
-    categories = Category.objects.all()
-
-    if request.method == "POST":
-        Medicine.objects.create(
-            name=request.POST.get("name"),
-            price=request.POST.get("price"),
-            stock=request.POST.get("stock"),
-            category_id=request.POST.get("category"),
-            image=request.FILES.get("image")
-        )
-        return redirect("admin_products")
-
-    return render(request, "adminpanel/product_form.html", {
-        "categories": categories
-    })
-
-
-@login_required
-@user_passes_test(is_admin)
-def edit_product(request, id):
-    product = get_object_or_404(Medicine, id=id)
-    categories = Category.objects.all()
-
-    if request.method == "POST":
-        product.name = request.POST.get("name")
-        product.price = request.POST.get("price")
-        product.stock = request.POST.get("stock")
-        product.category_id = request.POST.get("category")
-
-        if "image" in request.FILES:
-            product.image = request.FILES["image"]
-
-        product.save()
-        return redirect("admin_products")
-
-    return render(request, "adminpanel/product_form.html", {
-        "product": product,
-        "categories": categories
-    })
-
-
-@login_required
-@user_passes_test(is_admin)
-def delete_product(request, id):
-    product = get_object_or_404(Medicine, id=id)
-    product.delete()
-    return redirect("admin_products")
-
-
-# ================= DELIVERY LOCATIONS =================
 
 @login_required
 @user_passes_test(is_admin)
@@ -223,7 +157,6 @@ def admin_locations(request):
     })
 
 
-# ================= ADMIN ORDERS =================
 
 @login_required
 @user_passes_test(is_admin)
@@ -235,9 +168,12 @@ def admin_orders(request):
 
     orders = Order.objects.all().order_by("-created_at")
 
-    return render(request, "adminpanel/orders.html", {
-        "orders": orders
-    })
+    context = {
+        "orders": orders,
+        "orders_count": orders.count(),   # returns 0 if empty
+    }
+
+    return render(request, "adminpanel/orders.html", context)
     
 
 #  admin add_medicine

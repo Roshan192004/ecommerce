@@ -26,6 +26,13 @@
       <a href="{% url 'add_to_cart' product.id %}" class="add-btn">
   Add +
 </a>
+{% if messages %}
+  {% for message in messages %}
+    <div class="alert alert-danger">
+      {{ message }}
+    </div>
+  {% endfor %}
+{% endif %}
 
     </div>
     {% endfor %}
