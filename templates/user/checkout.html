@@ -4,14 +4,7 @@
 
 <h2 class="mb-4">Checkout</h2>
 
-<!-- ❌ Delivery error (only when location not serviceable) -->
-{% if messages %}
-  {% for message in messages %}
-    <div class="alert alert-danger">
-      {{ message }}
-    </div>
-  {% endfor %}
-{% endif %}
+
 
 <table class="table table-bordered">
   <thead class="table-dark">
@@ -42,7 +35,7 @@
 <div class="d-flex justify-content-between align-items-center mt-4">
   <h4>Total Amount: <strong>₹{{ total }}</strong></h4>
 
-  <!-- ✅ PLACE ORDER MUST BE POST -->
+  <!--PLACE ORDER -->
   <form method="post" action="{% url 'place_order' %}">
     {% csrf_token %}
     <button type="submit" class="btn btn-success btn-lg">

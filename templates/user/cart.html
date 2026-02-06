@@ -32,7 +32,13 @@
         {% endfor %}
     </tbody>
 </table>
-
+{% if messages %}
+  {% for message in messages %}
+    <div class="alert alert-danger">
+      {{ message }}
+    </div>
+  {% endfor %}
+{% endif %}
 <h4>Total: ₹{{ total }}</h4>
 <a href="{% url 'checkout' %}" class="btn btn-warning">
     Proceed to Checkout
